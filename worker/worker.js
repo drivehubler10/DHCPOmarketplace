@@ -1,4 +1,4 @@
-const ALLOWED_HOST = 'www.drivehublerpreowned.com';
+const ALLOWED_HOST = 'www.drivehubler.com';
 
 export default {
   async fetch(request) {
@@ -15,7 +15,7 @@ export default {
     try {
       const body = await request.json();
       const url = String(body.url || '').trim();
-      if (!isAllowedUrl(url)) throw new Error('Only DriveHubler Pre-Owned vehicle URLs are allowed.');
+      if (!isAllowedUrl(url)) throw new Error('Only DriveHubler vehicle URLs are allowed.');
 
       const response = await fetch(url, {
         redirect: 'follow',
@@ -60,6 +60,7 @@ function parseVehicle(html, url) {
   ]);
   const stock = first(html, [/(?:Stock|stockNumber|stock #)[^A-Z0-9]{0,50}([A-Z0-9-]{4,15})/i]);
   const mileage = first(html, [/(?:Mileage|mileage)[^\d]{0,50}([\d,]{2,7})/i, /([\d,]{2,7})\s*miles?/i]);
+  const location = first(html, [/(?:Location|location)[^A-Za-z]{0,20}([A-Za-z .'-]{3,40})/i]) || locationFromUrl(url);
   const photos = extractImages(html, url);
 
   return {
@@ -68,7 +69,7 @@ function parseVehicle(html, url) {
     marketplaceTitle: clean(title),
     price: price ? '$' + price : '',
     mileage: mileage ? mileage + ' miles' : '',
-    location: 'Greenwood, IN',
+    location: location || 'Indiana',
     stock: stock || '',
     vin: vin || '',
     description: makeDescription(clean(title), price, mileage, vin, stock, url),
@@ -79,12 +80,14 @@ function parseVehicle(html, url) {
 function extractImages(html, baseUrl) {
   const out = [];
   const seen = new Set();
-  const re = /<img[^>]+(?:src|data-src|data-lazy-src|data-original)=["']([^"']+)["'][^>]*>/gi;
+  const re = /<(?:img|source)[^>]+(?:src|data-src|data-lazy-src|data-original|srcset)=["']([^"']+)["'][^>]*>/gi;
   let m;
   while ((m = re.exec(html)) && out.length < 60) {
-    let u = m[1].replace(/&amp;/g, '&');
+    let raw = m[1].replace(/&amp;/g, '&');
+    // srcset can contain several URLs. Use the first candidate.
+    let u = raw.split(',')[0].trim().split(/\s+/)[0];
     try { u = new URL(u, baseUrl).toString(); } catch { continue; }
-    if (/^https:\/\//i.test(u) && /drivehublerpreowned\.com/i.test(u) && !seen.has(u)) {
+    if (/^https:\/\//i.test(u) && /drivehubler\.com/i.test(u) && !seen.has(u)) {
       seen.add(u); out.push(u);
     }
   }
@@ -107,9 +110,17 @@ function first(html, patterns) {
   return '';
 }
 
+function locationFromUrl(url) {
+  try {
+    const part = new URL(url).pathname.split('/')[1] || '';
+    return part.replace(/^used-/i,'').replace(/-/g,' ');
+  } catch { return 'Indiana'; }
+}
+
 function titleFromUrl(url) {
   try {
-    return decodeURIComponent(new URL(url).pathname.split('/').pop().replace(/^used-[^-]+-/i,'').replace(/-/g,' '));
+    const part = new URL(url).pathname.split('/').pop();
+    return decodeURIComponent(part.replace(/^used-[^-]+-/i,'').replace(/-/g,' '));
   } catch { return 'Vehicle'; }
 }
 
