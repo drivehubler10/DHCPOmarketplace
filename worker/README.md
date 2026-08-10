@@ -22,6 +22,6 @@ Open the Worker URL in a browser. It should return JSON similar to:
 
 `{"ok":true,"service":"Hubler Marketplace Importer"}`
 
-The Worker only accepts HTTPS vehicle URLs on `www.drivehublerpreowned.com` whose path contains `/used-`.
+The Worker only accepts HTTPS vehicle URLs on `www.drivehubler.com` whose path contains `/used-`.
 
 The Worker does not contain any Facebook login credentials or Google credentials. Final Marketplace publishing remains manual.
