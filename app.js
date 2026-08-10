@@ -1,4 +1,4 @@
-const API_URL = 'PASTE_CLOUDFLARE_WORKER_URL_HERE';
+const API_URL = 'https://bitter-recipe-889a.drivehubler10.workers.dev/';
 
 const $ = id => document.getElementById(id);
 let currentVehicle = null;
@@ -35,7 +35,7 @@ function fillVehicle(v) {
   $('title').value = v.marketplaceTitle || v.title || '';
   $('price').value = v.price || '';
   $('mileage').value = v.mileage || '';
-  $('location').value = v.location || 'Greenwood, IN';
+  $('location').value = v.location || 'Indiana';
   $('stock').value = v.stock || '';
   $('vin').value = v.vin || '';
   $('description').value = v.description || '';
@@ -47,7 +47,6 @@ function fillVehicle(v) {
 async function importVehicle() {
   const url = $('vehicleUrl').value.trim();
   if (!url) return setStatus('Paste a DriveHubler vehicle URL first.', 'error');
-  if (API_URL.includes('PASTE_')) return setStatus('The Cloudflare Worker URL has not been configured yet. Deploy the worker, then paste its URL into app.js.', 'error');
   $('importBtn').disabled = true;
   setStatus('Importing vehicle information...');
   try {
