@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hubler Marketplace Listing Tool</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">DRIVE HUBLER CERTIFIED PRE-OWNED</div>
+        <h1>Marketplace Listing Tool</h1>
+        <p>Paste a DriveHubler vehicle URL to build a Marketplace-ready listing.</p>
+      </div>
+      <a class="repo" href="https://github.com/drivehubler10/DHCPOmarketplace" target="_blank" rel="noopener">GitHub</a>
+    </header>
+
+    <section class="card">
+      <label for="vehicleUrl">Vehicle URL</label>
+      <div class="url-row">
+        <input id="vehicleUrl" type="url" placeholder="https://www.drivehublerpreowned.com/used-Greenwood-..." autocomplete="off">
+        <button id="importBtn" class="primary">Import Vehicle</button>
+      </div>
+      <div id="status" class="status" aria-live="polite"></div>
+    </section>
+
+    <section id="editor" class="card hidden">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">LISTING</div>
+          <h2 id="vehicleHeading">Vehicle</h2>
+        </div>
+        <span id="vinBadge" class="badge"></span>
+      </div>
+
+      <div class="grid three">
+        <div><label for="title">Marketplace Title</label><input id="title"></div>
+        <div><label for="price">Price</label><input id="price"></div>
+        <div><label for="mileage">Mileage</label><input id="mileage"></div>
+        <div><label for="location">Location</label><input id="location"></div>
+        <div><label for="stock">Stock #</label><input id="stock"></div>
+        <div><label for="vin">VIN</label><input id="vin"></div>
+      </div>
+
+      <label for="description">Marketplace Description</label>
+      <textarea id="description" rows="15"></textarea>
+
+      <div class="actions">
+        <button id="copyBtn" class="primary">Copy Listing</button>
+        <button id="openMarketplaceBtn" class="secondary">Open Facebook Marketplace</button>
+        <button id="saveBtn" class="secondary">Save Vehicle</button>
+      </div>
+    </section>
+
+    <section id="photosCard" class="card hidden">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">PHOTOS</div>
+          <h2>Select Marketplace Photos</h2>
+        </div>
+        <span id="photoCount" class="badge"></span>
+      </div>
+      <p class="muted">Select the photos you want to use. The image links can be opened directly from the grid. Facebook's final photo upload is still completed manually.</p>
+      <div id="photos" class="photos"></div>
+    </section>
+
+    <section id="savedCard" class="card">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">LOCAL HISTORY</div>
+          <h2>Saved Vehicles</h2>
+        </div>
+      </div>
+      <div id="savedVehicles" class="saved-list"></div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
