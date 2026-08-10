@@ -1,4 +1,4 @@
-const API_URL = 'PASTE_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+const API_URL = 'PASTE_CLOUDFLARE_WORKER_URL_HERE';
 
 const $ = id => document.getElementById(id);
 let currentVehicle = null;
@@ -47,17 +47,17 @@ function fillVehicle(v) {
 async function importVehicle() {
   const url = $('vehicleUrl').value.trim();
   if (!url) return setStatus('Paste a DriveHubler vehicle URL first.', 'error');
-  if (API_URL.includes('PASTE_')) return setStatus('The Google Apps Script Web App URL has not been configured yet. Publish the backend, then paste its URL into app.js.', 'error');
+  if (API_URL.includes('PASTE_')) return setStatus('The Cloudflare Worker URL has not been configured yet. Deploy the worker, then paste its URL into app.js.', 'error');
   $('importBtn').disabled = true;
   setStatus('Importing vehicle information...');
   try {
-    const res = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({url}) });
+    const res = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url}) });
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || 'Import failed.');
     fillVehicle(data.vehicle);
     setStatus('Vehicle imported successfully.', 'ok');
   } catch (err) {
-    setStatus(err.message || 'Failed to fetch the vehicle. Check the backend URL and deployment permissions.', 'error');
+    setStatus(err.message || 'Failed to fetch the vehicle. Check the Worker URL and deployment.', 'error');
   } finally { $('importBtn').disabled = false; }
 }
 
